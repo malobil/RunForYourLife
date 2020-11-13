@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class CharacterMovement : MonoBehaviour
 {
@@ -14,12 +15,19 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private float m_jumpDetection = 5f;
     [SerializeField] private LayerMask m_jumpLayersDetection = 0;
 
+    [SerializeField] private float m_dashForce = 5f;
+    [SerializeField] private float m_dashDuration = 0.5f;
+    
+
     [SerializeField] private Transform m_characterBody = null;
     [SerializeField] private Transform m_camera = null;
     [SerializeField] private float m_horizontalSensibility = 1f;
     [SerializeField] private float m_verticalSensibility = 1f;
 
-
+    private bool m_canMove = true ;
+    private bool m_canJump = true ;
+    private bool m_canDash = true;
+    private bool m_canResetDash = false;
 
     private float m_currentHorizontalMoveSpeed;
     private float m_currentVerticalMoveSpeed;
@@ -42,10 +50,19 @@ public class CharacterMovement : MonoBehaviour
     {
         Move();
         UpdateCamera();
+
+        if(m_canResetDash && CheckJump())
+        {
+            m_canDash = true;
+            m_canResetDash = false;
+        }
     }
 
     private void Move()
     {
+        if (!m_canMove)
+            return;
+
         float horizontalInput = -m_inputs.StandardInputs.Move.ReadValue<Vector2>().x;
         float verticalInput = m_inputs.StandardInputs.Move.ReadValue<Vector2>().y;
 
@@ -82,11 +99,31 @@ public class CharacterMovement : MonoBehaviour
 
     private void Jump()
     {
-        if(CheckJump())
+        if(CheckJump() && m_canJump)
         {
             ResetYVelocity();
             m_rbComp.AddForce(m_characterBody.up * m_jumpForce, ForceMode.Impulse);
         }
+    }
+
+    private void Dash()
+    {
+        if (!m_canDash)
+            return;
+
+        m_canMove = false;
+        m_canJump = false;
+        m_canDash = false;
+        m_rbComp.AddForce(m_camera.forward * m_dashForce, ForceMode.VelocityChange);
+        StartCoroutine(UpdateDashCoolDown());
+    }
+
+    IEnumerator UpdateDashCoolDown()
+    {
+        yield return new WaitForSeconds(m_dashDuration);
+        m_canJump = true;
+        m_canMove = true;
+        m_canResetDash = true;
     }
 
     private bool CheckJump()
@@ -107,5 +144,6 @@ public class CharacterMovement : MonoBehaviour
         m_inputs.StandardInputs.Sprint.performed += ctx => Sprint() ;
         m_inputs.StandardInputs.Sprint.canceled += ctx => Walk() ;
         m_inputs.StandardInputs.Jump.performed += ctx => Jump() ;
+        m_inputs.StandardInputs.Dash.performed += ctx => Dash() ;
     }
 }

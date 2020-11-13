@@ -49,6 +49,14 @@ public class @CharacterControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Dash"",
+                    ""type"": ""Button"",
+                    ""id"": ""e24756ce-a2e7-4e27-86fe-9dbc2f21afd1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -139,6 +147,17 @@ public class @CharacterControls : IInputActionCollection, IDisposable
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""88115483-fa61-45cd-9e74-b4a2532951e2"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -151,6 +170,7 @@ public class @CharacterControls : IInputActionCollection, IDisposable
         m_StandardInputs_MouseDelta = m_StandardInputs.FindAction("MouseDelta", throwIfNotFound: true);
         m_StandardInputs_Sprint = m_StandardInputs.FindAction("Sprint", throwIfNotFound: true);
         m_StandardInputs_Jump = m_StandardInputs.FindAction("Jump", throwIfNotFound: true);
+        m_StandardInputs_Dash = m_StandardInputs.FindAction("Dash", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -204,6 +224,7 @@ public class @CharacterControls : IInputActionCollection, IDisposable
     private readonly InputAction m_StandardInputs_MouseDelta;
     private readonly InputAction m_StandardInputs_Sprint;
     private readonly InputAction m_StandardInputs_Jump;
+    private readonly InputAction m_StandardInputs_Dash;
     public struct StandardInputsActions
     {
         private @CharacterControls m_Wrapper;
@@ -212,6 +233,7 @@ public class @CharacterControls : IInputActionCollection, IDisposable
         public InputAction @MouseDelta => m_Wrapper.m_StandardInputs_MouseDelta;
         public InputAction @Sprint => m_Wrapper.m_StandardInputs_Sprint;
         public InputAction @Jump => m_Wrapper.m_StandardInputs_Jump;
+        public InputAction @Dash => m_Wrapper.m_StandardInputs_Dash;
         public InputActionMap Get() { return m_Wrapper.m_StandardInputs; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -233,6 +255,9 @@ public class @CharacterControls : IInputActionCollection, IDisposable
                 @Jump.started -= m_Wrapper.m_StandardInputsActionsCallbackInterface.OnJump;
                 @Jump.performed -= m_Wrapper.m_StandardInputsActionsCallbackInterface.OnJump;
                 @Jump.canceled -= m_Wrapper.m_StandardInputsActionsCallbackInterface.OnJump;
+                @Dash.started -= m_Wrapper.m_StandardInputsActionsCallbackInterface.OnDash;
+                @Dash.performed -= m_Wrapper.m_StandardInputsActionsCallbackInterface.OnDash;
+                @Dash.canceled -= m_Wrapper.m_StandardInputsActionsCallbackInterface.OnDash;
             }
             m_Wrapper.m_StandardInputsActionsCallbackInterface = instance;
             if (instance != null)
@@ -249,6 +274,9 @@ public class @CharacterControls : IInputActionCollection, IDisposable
                 @Jump.started += instance.OnJump;
                 @Jump.performed += instance.OnJump;
                 @Jump.canceled += instance.OnJump;
+                @Dash.started += instance.OnDash;
+                @Dash.performed += instance.OnDash;
+                @Dash.canceled += instance.OnDash;
             }
         }
     }
@@ -259,5 +287,6 @@ public class @CharacterControls : IInputActionCollection, IDisposable
         void OnMouseDelta(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+        void OnDash(InputAction.CallbackContext context);
     }
 }
