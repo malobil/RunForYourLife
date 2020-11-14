@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class CharacterMovement : MonoBehaviour
 {
+    public static CharacterMovement Instance { get; private set; }
 
     [SerializeField] private Rigidbody m_rbComp = null;
 
@@ -13,13 +14,13 @@ public class CharacterMovement : MonoBehaviour
 
     [SerializeField] private float m_overSpeedFadeRatio = 1f;
 
-    [SerializeField] private float m_jumpForce = 3f; 
+    [SerializeField] private float m_jumpForce = 3f;
     [SerializeField] private float m_jumpDetection = 5f;
     [SerializeField] private LayerMask m_jumpLayersDetection = 0;
 
     [SerializeField] private float m_dashOverspeed = 1.3f;
     [SerializeField] private float m_dashForce = 5f;
-    [SerializeField] private float m_dashDuration = 0.5f;    
+    [SerializeField] private float m_dashDuration = 0.5f;
 
     [SerializeField] private Transform m_characterBody = null;
     [SerializeField] private Transform m_camera = null;
@@ -28,8 +29,8 @@ public class CharacterMovement : MonoBehaviour
 
     //[SerializeField] private WallCollisionDetector m_wallJumpDetector;
 
-    private bool m_canMove = true ;
-    private bool m_canJump = true ;
+    private bool m_canMove = true;
+    private bool m_canJump = true;
     private bool m_canDash = true;
     private bool m_canResetDash = false;
 
@@ -42,6 +43,15 @@ public class CharacterMovement : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+
         SetupInputs();
     }
 
@@ -57,17 +67,17 @@ public class CharacterMovement : MonoBehaviour
         Move();
         UpdateCamera();
 
-        if(m_canResetDash && CheckJump())
+        if (m_canResetDash && CheckJump())
         {
             m_canDash = true;
             m_canResetDash = false;
         }
 
-        if(m_overspeed > 1f)
+        if (m_overspeed > 1f)
         {
             m_overspeed -= Time.deltaTime * m_overSpeedFadeRatio;
         }
-        else if(m_overspeed < 1f)
+        else if (m_overspeed < 1f)
         {
             m_overspeed = 1f;
         }
@@ -114,7 +124,7 @@ public class CharacterMovement : MonoBehaviour
 
     private void Jump()
     {
-        if(CheckJump() && m_canJump)
+        if (CheckJump() && m_canJump)
         {
             ResetYVelocity();
             m_rbComp.AddForce(m_characterBody.up * m_jumpForce, ForceMode.Impulse);
@@ -122,14 +132,14 @@ public class CharacterMovement : MonoBehaviour
     }
 
     /*private void WallJump()
-    {
-        if(m_wallJumpDetector.WallDetected)
-        {
-            ResetYVelocity();
-            m_overspeed = 4f;
-            m_rbComp.AddForce(m_camera.forward * m_dashForce, ForceMode.VelocityChange);
-        }
-    }*/
+	{
+		if(m_wallJumpDetector.WallDetected)
+		{
+			ResetYVelocity();
+			m_overspeed = 4f;
+			m_rbComp.AddForce(m_camera.forward * m_dashForce, ForceMode.VelocityChange);
+		}
+	}*/
 
     private void Dash()
     {
@@ -155,7 +165,7 @@ public class CharacterMovement : MonoBehaviour
     private bool CheckJump()
     {
         //Debug.DrawRay(m_characterBody.position, -m_characterBody.up * m_jumpDetection, Color.red,1000f) ;
-        return Physics.Raycast(m_characterBody.position, -m_characterBody.up, m_jumpDetection, m_jumpLayersDetection); 
+        return Physics.Raycast(m_characterBody.position, -m_characterBody.up, m_jumpDetection, m_jumpLayersDetection);
     }
 
     private void ResetYVelocity()
@@ -166,11 +176,35 @@ public class CharacterMovement : MonoBehaviour
     private void SetupInputs()
     {
         m_inputs = new CharacterControls();
+        EnableInput();
+        m_inputs.StandardInputs.Sprint.performed += ctx => Sprint();
+        m_inputs.StandardInputs.Sprint.canceled += ctx => Walk();
+        m_inputs.StandardInputs.Jump.performed += ctx => Jump();
+        // m_inputs.StandardInputs.Jump.performed += ctx => WallJump() ;
+        m_inputs.StandardInputs.Dash.performed += ctx => Dash();
+    }
+
+    public void DisableInput()
+    {
+        m_inputs.Disable();
+    }
+
+    public void EnableInput()
+    {
         m_inputs.Enable();
-        m_inputs.StandardInputs.Sprint.performed += ctx => Sprint() ;
-        m_inputs.StandardInputs.Sprint.canceled += ctx => Walk() ;
-        m_inputs.StandardInputs.Jump.performed += ctx => Jump() ;
-       // m_inputs.StandardInputs.Jump.performed += ctx => WallJump() ;
-        m_inputs.StandardInputs.Dash.performed += ctx => Dash() ;
+    }
+
+    public void FreezeRigidbody()
+    {
+        m_rbComp.isKinematic = true;
+    }
+
+    private void OnDisable()
+    {
+        m_inputs.StandardInputs.Sprint.performed -= ctx => Sprint();
+        m_inputs.StandardInputs.Sprint.canceled -= ctx => Walk();
+        m_inputs.StandardInputs.Jump.performed -= ctx => Jump();
+        // m_inputs.StandardInputs.Jump.performed += ctx => WallJump() ;
+        m_inputs.StandardInputs.Dash.performed -= ctx => Dash();
     }
 }
