@@ -27,7 +27,10 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private float m_horizontalSensibility = 1f;
     [SerializeField] private float m_verticalSensibility = 1f;
 
-    //[SerializeField] private WallCollisionDetector m_wallJumpDetector;
+    [SerializeField] private float m_maxHP;
+    [SerializeField] private float m_looseHPRatio = 1f ;
+
+ 
 
     private bool m_canMove = true;
     private bool m_canJump = true;
@@ -37,9 +40,10 @@ public class CharacterMovement : MonoBehaviour
     private float m_currentHorizontalMoveSpeed;
     private float m_currentVerticalMoveSpeed;
     private float xRotation = 0f;
-    private CharacterControls m_inputs;
-
+    private float m_currentHP;
     private float m_overspeed = 1f;
+
+    private CharacterControls m_inputs;
 
     private void Awake()
     {
@@ -59,6 +63,7 @@ public class CharacterMovement : MonoBehaviour
     void Start()
     {
         Walk();
+        m_currentHP = m_maxHP;
     }
 
     // Update is called once per frame
@@ -66,6 +71,7 @@ public class CharacterMovement : MonoBehaviour
     {
         Move();
         UpdateCamera();
+        LooseLife();
 
         if (m_canResetDash && CheckJump())
         {
@@ -108,6 +114,12 @@ public class CharacterMovement : MonoBehaviour
 
         m_characterBody.Rotate(Vector3.up * mouseX);
         m_camera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+    }
+
+    private void LooseLife()
+    {
+        m_currentHP -= Time.deltaTime * m_looseHPRatio;
+        UIManager.Instance.UpdateLifeUI(m_currentHP, m_maxHP);
     }
 
     private void Sprint()

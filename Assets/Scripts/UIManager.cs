@@ -1,14 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
-public enum UIElement { GameOver}
+public enum UIElement { GameOver, Victory, LifeBar}
 
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
 
     [SerializeField] private UIObject[] UIElements ;
+    [SerializeField] private string m_mainMenu = "MainMenu" ;
+    [SerializeField] private Image m_lifeBar;
 
     private void Awake()
     {
@@ -34,6 +38,11 @@ public class UIManager : MonoBehaviour
         
     }
 
+    public void UpdateLifeUI(float actualValue, float maxValue)
+    {
+        m_lifeBar.fillAmount = actualValue/maxValue ;
+    }
+
     public void ShowHideUI(UIElement UIToShow, bool show)
     {
         for(int i = 0; i < UIElements.Length; i++)
@@ -44,6 +53,26 @@ public class UIManager : MonoBehaviour
                 return;
             }
         }
+    }
+
+    public void ReplayButton()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void ContinueButton()
+    {
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+
+        if (currentSceneIndex < SceneManager.sceneCountInBuildSettings - 1)
+        {
+            SceneManager.LoadScene(currentSceneIndex + 1);
+        }
+    }
+
+    public void QuitButton()
+    {
+        SceneManager.LoadScene(m_mainMenu);
     }
 }
 

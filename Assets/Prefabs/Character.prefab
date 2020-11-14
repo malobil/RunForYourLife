@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 963194228}
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Main Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93,7 +93,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3344809223997992334}
   - component: {fileID: 6402405837174628800}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -139,7 +139,7 @@ GameObject:
   - component: {fileID: 7025070489673837975}
   - component: {fileID: 1025303223699052432}
   - component: {fileID: 1317986767566182444}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Character
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -208,3 +208,5 @@ MonoBehaviour:
   m_camera: {fileID: 963194228}
   m_horizontalSensibility: 0.5
   m_verticalSensibility: 0.5
+  m_maxHP: 50
+  m_looseHPRatio: 1
