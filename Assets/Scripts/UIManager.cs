@@ -57,6 +57,7 @@ public class UIManager : MonoBehaviour
 
     public void ReplayButton()
     {
+        CharacterMovement.Instance.ResetInputs();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
@@ -66,12 +67,14 @@ public class UIManager : MonoBehaviour
 
         if (currentSceneIndex < SceneManager.sceneCountInBuildSettings - 1)
         {
+            CharacterMovement.Instance.ResetInputs();
             SceneManager.LoadScene(currentSceneIndex + 1);
         }
     }
 
     public void QuitButton()
     {
+        CharacterMovement.Instance.ResetInputs();
         SceneManager.LoadScene(m_mainMenu);
     }
 }

@@ -62,6 +62,7 @@ public class CharacterMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Time.timeScale = 1f;
         Walk();
         m_currentHP = m_maxHP;
     }
@@ -116,10 +117,29 @@ public class CharacterMovement : MonoBehaviour
         m_camera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
     }
 
+    public void GainLife(float lifeToGain)
+    {
+        if(m_currentHP + lifeToGain <= m_maxHP)
+        {
+            m_currentHP += lifeToGain;
+        }
+        else
+        {
+            m_currentHP = m_maxHP;
+        }
+
+        UIManager.Instance.UpdateLifeUI(m_currentHP, m_maxHP);
+    }
+
     private void LooseLife()
     {
         m_currentHP -= Time.deltaTime * m_looseHPRatio;
         UIManager.Instance.UpdateLifeUI(m_currentHP, m_maxHP);
+
+        if(m_currentHP <= 0)
+        {
+            Die();
+        }
     }
 
     private void Sprint()
@@ -211,7 +231,23 @@ public class CharacterMovement : MonoBehaviour
         m_rbComp.isKinematic = true;
     }
 
-    private void OnDisable()
+    public void Die()
+    {
+        DisableInput();
+        FreezeRigidbody();
+        Time.timeScale = 0;
+        UIManager.Instance.ShowHideUI(UIElement.GameOver, true);
+    }
+
+    public void Win()
+    {
+        DisableInput();
+        FreezeRigidbody();
+        Time.timeScale = 0;
+        UIManager.Instance.ShowHideUI(UIElement.Victory, true);
+    }
+
+    public void ResetInputs()
     {
         m_inputs.StandardInputs.Sprint.performed -= ctx => Sprint();
         m_inputs.StandardInputs.Sprint.canceled -= ctx => Walk();

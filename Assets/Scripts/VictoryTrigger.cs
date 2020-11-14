@@ -6,8 +6,6 @@ public class VictoryTrigger : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        CharacterMovement.Instance.DisableInput();
-        CharacterMovement.Instance.FreezeRigidbody();
-        UIManager.Instance.ShowHideUI(UIElement.Victory, true);
+        CharacterMovement.Instance.Win();
     }
 }

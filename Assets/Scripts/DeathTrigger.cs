@@ -6,8 +6,6 @@ public class DeathTrigger : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        CharacterMovement.Instance.DisableInput();
-        CharacterMovement.Instance.FreezeRigidbody();
-        UIManager.Instance.ShowHideUI(UIElement.GameOver, true);
+        CharacterMovement.Instance.Die();
     }
 }
