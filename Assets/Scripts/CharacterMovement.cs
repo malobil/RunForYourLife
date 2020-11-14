@@ -11,18 +11,22 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private float m_horizontalSprintMoveSpeed = 5f;
     [SerializeField] private float m_verticalSprintMoveSpeed = 5f;
 
+    [SerializeField] private float m_overSpeedFadeRatio = 1f;
+
     [SerializeField] private float m_jumpForce = 3f; 
     [SerializeField] private float m_jumpDetection = 5f;
     [SerializeField] private LayerMask m_jumpLayersDetection = 0;
 
+    [SerializeField] private float m_dashOverspeed = 1.3f;
     [SerializeField] private float m_dashForce = 5f;
-    [SerializeField] private float m_dashDuration = 0.5f;
-    
+    [SerializeField] private float m_dashDuration = 0.5f;    
 
     [SerializeField] private Transform m_characterBody = null;
     [SerializeField] private Transform m_camera = null;
     [SerializeField] private float m_horizontalSensibility = 1f;
     [SerializeField] private float m_verticalSensibility = 1f;
+
+    //[SerializeField] private WallCollisionDetector m_wallJumpDetector;
 
     private bool m_canMove = true ;
     private bool m_canJump = true ;
@@ -33,6 +37,8 @@ public class CharacterMovement : MonoBehaviour
     private float m_currentVerticalMoveSpeed;
     private float xRotation = 0f;
     private CharacterControls m_inputs;
+
+    private float m_overspeed = 1f;
 
     private void Awake()
     {
@@ -56,6 +62,15 @@ public class CharacterMovement : MonoBehaviour
             m_canDash = true;
             m_canResetDash = false;
         }
+
+        if(m_overspeed > 1f)
+        {
+            m_overspeed -= Time.deltaTime * m_overSpeedFadeRatio;
+        }
+        else if(m_overspeed < 1f)
+        {
+            m_overspeed = 1f;
+        }
     }
 
     private void Move()
@@ -66,8 +81,8 @@ public class CharacterMovement : MonoBehaviour
         float horizontalInput = -m_inputs.StandardInputs.Move.ReadValue<Vector2>().x;
         float verticalInput = m_inputs.StandardInputs.Move.ReadValue<Vector2>().y;
 
-        Vector3 forwardMovement = m_characterBody.forward * verticalInput * m_currentHorizontalMoveSpeed;
-        Vector3 horizontalMovement = m_characterBody.right * horizontalInput * m_currentVerticalMoveSpeed;
+        Vector3 forwardMovement = m_characterBody.forward * verticalInput * m_currentHorizontalMoveSpeed * m_overspeed;
+        Vector3 horizontalMovement = m_characterBody.right * horizontalInput * m_currentVerticalMoveSpeed * m_overspeed;
         Vector3 verticalMovement = new Vector3(0, m_rbComp.velocity.y, 0);
 
         m_rbComp.velocity = forwardMovement + horizontalMovement + verticalMovement;
@@ -106,6 +121,16 @@ public class CharacterMovement : MonoBehaviour
         }
     }
 
+    /*private void WallJump()
+    {
+        if(m_wallJumpDetector.WallDetected)
+        {
+            ResetYVelocity();
+            m_overspeed = 4f;
+            m_rbComp.AddForce(m_camera.forward * m_dashForce, ForceMode.VelocityChange);
+        }
+    }*/
+
     private void Dash()
     {
         if (!m_canDash)
@@ -114,6 +139,7 @@ public class CharacterMovement : MonoBehaviour
         m_canMove = false;
         m_canJump = false;
         m_canDash = false;
+        m_overspeed = m_dashOverspeed;
         m_rbComp.AddForce(m_camera.forward * m_dashForce, ForceMode.VelocityChange);
         StartCoroutine(UpdateDashCoolDown());
     }
@@ -144,6 +170,7 @@ public class CharacterMovement : MonoBehaviour
         m_inputs.StandardInputs.Sprint.performed += ctx => Sprint() ;
         m_inputs.StandardInputs.Sprint.canceled += ctx => Walk() ;
         m_inputs.StandardInputs.Jump.performed += ctx => Jump() ;
+       // m_inputs.StandardInputs.Jump.performed += ctx => WallJump() ;
         m_inputs.StandardInputs.Dash.performed += ctx => Dash() ;
     }
 }

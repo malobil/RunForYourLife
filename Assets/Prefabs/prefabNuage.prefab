@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 7735003669764366388}
   - component: {fileID: 6698993731634917265}
   - component: {fileID: 8868550871575305051}
-  - component: {fileID: 1809368689775743253}
-  m_Layer: 0
+  - component: {fileID: 1192922401}
+  m_Layer: 8
   m_Name: prefabNuage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -26,7 +26,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6923035895156554382}
-  m_LocalRotation: {x: 0.000000021855694, y: 0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -82,7 +82,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &1809368689775743253
+--- !u!65 &1192922401
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -93,5 +93,5 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.8106525, y: 0.47498733, z: 1.8099544}
-  m_Center: {x: -0.00070026517, y: 0.19694531, z: -0.008785993}
+  m_Size: {x: 1.8106525, y: 0.16, z: 1.8099544}
+  m_Center: {x: 0, y: 0.19694531, z: -0.008785993}

@@ -155,7 +155,7 @@ Transform:
   m_GameObject: {fileID: 3413260064887805713}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 4.28, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
   - {fileID: 3344809223997992334}
   - {fileID: 963194228}
@@ -195,12 +195,16 @@ MonoBehaviour:
   m_verticalWalkMoveSpeed: 3
   m_horizontalSprintMoveSpeed: 5
   m_verticalSprintMoveSpeed: 5
-  m_jumpForce: 5
-  m_jumpDetection: 1.7
+  m_overSpeedFadeRatio: 1
+  m_jumpForce: 3
+  m_jumpDetection: 1.5
   m_jumpLayersDetection:
     serializedVersion: 2
     m_Bits: 256
+  m_dashOverspeed: 1.3
+  m_dashForce: 10
+  m_dashDuration: 0.3
   m_characterBody: {fileID: 7025070489673837975}
   m_camera: {fileID: 963194228}
-  m_horizontalSensibility: 1
-  m_verticalSensibility: 1
+  m_horizontalSensibility: 0.5
+  m_verticalSensibility: 0.5
