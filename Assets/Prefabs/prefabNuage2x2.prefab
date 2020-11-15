@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3916658549691372129}
   - component: {fileID: 1278515947372095147}
   - component: {fileID: 7660603676040917372}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: prefabNuage2x2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93,5 +93,5 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 4.1132374, y: 0.6545825, z: 4.121208}
+  m_Size: {x: 3.6, y: 0.18, z: 3.6}
   m_Center: {x: 0, y: 0, z: 0.00000011920929}
